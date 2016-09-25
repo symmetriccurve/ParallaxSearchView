@@ -44,7 +44,7 @@ class ParallaxView extends Component {
      return (
       <View style={styles.scrollViewContent}>
          {data.map((_, i) =>
-            <View style={styles.container} key ={i}>
+            <View style={[styles.container,{backgroundColor:(i%2)?'coral':'tan'}]} key ={i}>
               <Text style={styles.welcome}>
                 Device {i+1}
               </Text>
@@ -65,7 +65,7 @@ class ParallaxView extends Component {
    Animated.spring(                          // Base: spring, decay, timing
       this.state.pullUp,                 // Animate `bounceValue`
       {
-        toValue: 600,                         // Animate to smaller size
+        toValue: 200,                         // Animate to smaller size
         friction: 10,                          // Bouncier spring
       }
    ).start();
@@ -113,7 +113,7 @@ this.state.bounceValue.setValue(0.5);     // Start large
 
 const headerHeight = this.state.scrollY.interpolate({
   inputRange: [0 , 4],
-  outputRange: [600, 200],
+  outputRange: [500, 100],
   extrapolate: 'clamp',
 });
 
@@ -141,7 +141,7 @@ const marginTop = this.state.scrollY.interpolate({
                   console.log("Scroll Y ", this.state.scrollY),
                   Animated.event([{nativeEvent: {contentOffset: {y: this.state.scrollY}}}])}
                scrollEventThrottle = {16}>
-                  <Animated.View style={{height:headerHeight,width:width,backgroundColor: color}}>
+                  <Animated.View style={[{height:headerHeight,width:width,backgroundColor: color},styles.shadow]}>
                      <TextInput  onSubmitEditing ={()=>{this._pullUp()}} style ={{flex:1,position:'absolute',top:50,bottom:50,left:20,right:20,backgroundColor:'coral',height:40}}/>
                   </Animated.View>
                   {this._renderScrollViewContent()}
@@ -322,6 +322,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5FCFF',
   },
   welcome: {
+    color:'#FFFFFF',
     fontSize: 20,
     textAlign: 'center',
     margin: 10,
@@ -334,7 +335,16 @@ const styles = StyleSheet.create({
   animated:{
      height:height/10,
      width:width,
- }
+ },
+ shadow:{
+    shadowColor: "#000000",
+    shadowOpacity: 0.5,
+    shadowRadius: 3,
+    shadowOffset: {
+      height: 1,
+      width: 0
+    }
+}
 });
 
 // import React, {Component} from 'react';
