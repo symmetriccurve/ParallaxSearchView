@@ -25,18 +25,35 @@ var Parallax = require('./Parallax')
 class ParallaxView extends Component {
    constructor(props) {
      super(props);
-
      this.state = {
        enter         :   new Animated.Value(0.5),
        scrollY       :   new Animated.Value(0),
        bounceValue   :   new Animated.Value(0),
        pullUp        :   new Animated.Value(800)
      };
+     this.headerHeight = this.state.scrollY.interpolate({
+       inputRange: [0 , 10 ],
+       outputRange: [400, 100],
+       extrapolate: 'clamp',
+     });
+
+     this.color = this.state.scrollY.interpolate({
+         inputRange: [0, 50],
+         outputRange: ['rgba(255, 0, 0, 1)', 'rgba(0, 255, 0, 1)']
+     });
+
+     //
+     this.marginTop = this.state.scrollY.interpolate({
+       inputRange: [0, 100],
+       outputRange: [100, -500],
+       extrapolate: 'clamp',
+    });
    }
 
    componentDidMount(){
-      this._callthis();
-                              // Start the animation
+
+      this._firstDevice(800)
+                           // Start the animation
    }
 
    _renderScrollViewContent() {
@@ -54,261 +71,68 @@ class ParallaxView extends Component {
      );
    }
 
-   _animateEntrance() {
-     Animated.spring(
-      this.state.enter,
-      { toValue: 1, friction: 8 }
-     ).start();
+//    _animateEntrance() {
+//      Animated.spring(
+//       this.state.enter,
+//       { toValue: 1, friction: 8 }
+//      ).start();
+//    }
+//
+//  _pullUp(){
+//    Animated.spring(                          // Base: spring, decay, timing
+//       this.state.pullUp,                 // Animate `bounceValue`
+//       {
+//         toValue: 200,                         // Animate to smaller size
+//         friction: 10,                          // Bouncier spring
+//       }
+//    ).start();
+//    }
+//
+//    _callthis(value){
+//
+// this.state.bounceValue.setValue(0.5);     // Start large
+//  Animated.spring(                          // Base: spring, decay, timing
+//      this.state.bounceValue,                 // Animate `bounceValue`
+//      {
+//       toValue: 0.6,                         // Animate to smaller size
+//       friction: 10,                          // Bouncier spring
+//      }
+//  ).start();
+//    }
+
+   _firstDevice(value){
+      Animated.spring(                          // Base: spring, decay, timing
+          this.state.pullUp,                 // Animate `bounceValue`
+          {
+           toValue: value,                         // Animate to smaller size
+           friction: 10,                          // Bouncier spring
+          }
+      ).start();
    }
-
- _pullUp(){
-   Animated.spring(                          // Base: spring, decay, timing
-      this.state.pullUp,                 // Animate `bounceValue`
-      {
-        toValue: 200,                         // Animate to smaller size
-        friction: 10,                          // Bouncier spring
-      }
-   ).start();
-   }
-
-   _callthis(value){
-
-this.state.bounceValue.setValue(0.5);     // Start large
- Animated.spring(                          // Base: spring, decay, timing
-     this.state.bounceValue,                 // Animate `bounceValue`
-     {
-      toValue: 0.6,                         // Animate to smaller size
-      friction: 10,                          // Bouncier spring
-     }
- ).start();
-   }
-
 
   render() {
 
-   //   const TM = this.state.bounceValue.interpolate({
-   //    inputRange: [0, 0.5],
-   //    outputRange: [0, 100],
-   //    extrapolate: 'clamp',
-   //   });
-     //
-     //
-   //   console.log("this state",this.state);
-   //   return(
-   //     <View style={{flex:1}}>
-   //       <TouchableHighlight onPress ={()=>{this._pullUp()}} style={{flex:1}} underlayColor= 'transparent'>
-   //            <Animated.Image                         // Base: Image, Text, View
-   //            source={{uri: 'https://facebook.github.io/react/img/logo_og.png'}}
-   //            style={{
-   //              flex: 1,
-   //              transform: [
-   //                {translateY: this.state.pullUp},                   // `transform` is an ordered array
-   //                {scale: this.state.bounceValue},  // Map `bounceValue` to `scale`
-   //              ]
-   //            }}
-   //          />
-   // //       </TouchableHighlight>
-   //    </View>
-   //   );
-
-const headerHeight = this.state.scrollY.interpolate({
-  inputRange: [0 , 4],
-  outputRange: [500, 100],
-  extrapolate: 'clamp',
-});
-
-var color = this.state.scrollY.interpolate({
-    inputRange: [0, 50],
-    outputRange: ['rgba(255, 0, 0, 1)', 'rgba(0, 255, 0, 1)']
-});
-
-//
-const marginTop = this.state.scrollY.interpolate({
-  inputRange: [0, 100],
-  outputRange: [100, -500],
-  extrapolate: 'clamp',
-});
+     const drag = this.state.scrollY.interpolate({
+      inputRange: [0, 100],
+      outputRange: [100, -500],
+      extrapolate: 'clamp',
+   });
 
    //return <Parallax/>
     return (
       <View style ={{flex:1,position:'absolute',top:0,bottom:0,left:0,right:0}}>
-            {/*<Animated.View style ={{flex:1,position:'absolute',top:0,bottom:0,left:0,right:0,backgroundColor:'lightyellow'}}>
-                  <TextInput  onSubmitEditing ={()=>{this._pullUp()}} style ={{flex:1,position:'absolute',top:50,bottom:50,left:20,right:20,backgroundColor:'coral',height:40}}/>
-            </Animated.View>*/}
             <ScrollView style ={{flex:1,position:'absolute',top:0,bottom:0,left:0,right:0,backgroundColor:'peachpuff'}}
             stickyHeaderIndices={[0]}
                onScroll = {
                   console.log("Scroll Y ", this.state.scrollY),
                   Animated.event([{nativeEvent: {contentOffset: {y: this.state.scrollY}}}])}
                scrollEventThrottle = {16}>
-                  <Animated.View style={[{height:headerHeight,width:width,backgroundColor: color},styles.shadow]}>
-                     <TextInput  onSubmitEditing ={()=>{this._pullUp()}} style ={{flex:1,position:'absolute',top:50,bottom:50,left:20,right:20,backgroundColor:'coral',height:40}}/>
+                  <Animated.View style={[{height:this.state.pullUp,width:width,backgroundColor: this.color,zIndex:1},styles.shadow]}>
+                     <TextInput  onSubmitEditing ={()=>{this._firstDevice(400)}} onFocus = {()=>{this._firstDevice(800)}} style ={{flex:1,position:'absolute',top:50,bottom:50,left:20,right:20,backgroundColor:'coral',height:40}}/>
                   </Animated.View>
                   {this._renderScrollViewContent()}
 
             </ScrollView>
-
-
-            {/*<ScrollView
-            style={{position:'absolute',top:0,bottom:0,left:0,right:0,zIndex:100}}
-            ref = "scrollViewRef"
-            scrollEventThrottle = {16}
-            //onContentSizeChange = {(hello)=>{console.log('onContentSizeChange',hello)}}
-            onScroll = {Animated.event(
-           [{nativeEvent: {contentOffset: {y: this.state.scrollY}}}]
-            )}>
-
-            <Animated.View style={{width:width,height:200, backgroundColor:'tan'}}>
-               <Animated.Image
-                  style={{position:'absolute',top:0,bottom:0,left:0,right:0,width:width ,height:headerHeight,opacity:1}}
-                  source={{uri: 'https://facebook.github.io/react/img/logo_og.png'}}
-                  />
-            </Animated.View>
-                  <View style={styles.container}>
-                    <Text style={styles.welcome}>
-                      Welcome to React Native!
-                    </Text>
-                    <Text style={styles.instructions}>
-                      To get started, edit index.ios.js
-                    </Text>
-                    <Text style={styles.instructions}>
-                      Press Cmd+R to reload,{'\n'}
-                      Cmd+D or shake for dev menu
-                    </Text>
-                  </View>
-                  <View style={styles.container}>
-                    <Text style={styles.welcome}>
-                      Welcome to React Native!
-                    </Text>
-                    <Text style={styles.instructions}>
-                      To get started, edit index.ios.js
-                    </Text>
-                    <Text style={styles.instructions}>
-                      Press Cmd+R to reload,{'\n'}
-                      Cmd+D or shake for dev menu
-                    </Text>
-                  </View>
-                  <View style={styles.container}>
-                    <Text style={styles.welcome}>
-                      Welcome to React Native!
-                    </Text>
-                    <Text style={styles.instructions}>
-                      To get started, edit index.ios.js
-                    </Text>
-                    <Text style={styles.instructions}>
-                      Press Cmd+R to reload,{'\n'}
-                      Cmd+D or shake for dev menu
-                    </Text>
-                  </View>
-                  <View style={styles.container}>
-                    <Text style={styles.welcome}>
-                      Welcome to React Native!
-                    </Text>
-                    <Text style={styles.instructions}>
-                      To get started, edit index.ios.js
-                    </Text>
-                    <Text style={styles.instructions}>
-                      Press Cmd+R to reload,{'\n'}
-                      Cmd+D or shake for dev menu
-                    </Text>
-                  </View>
-                  <View style={styles.container}>
-                    <Text style={styles.welcome}>
-                      Welcome to React Native!
-                    </Text>
-                    <Text style={styles.instructions}>
-                      To get started, edit index.ios.js
-                    </Text>
-                    <Text style={styles.instructions}>
-                      Press Cmd+R to reload,{'\n'}
-                      Cmd+D or shake for dev menu
-                    </Text>
-                  </View>
-                  <View style={styles.container}>
-                    <Text style={styles.welcome}>
-                      Welcome to React Native!
-                    </Text>
-                    <Text style={styles.instructions}>
-                      To get started, edit index.ios.js
-                    </Text>
-                    <Text style={styles.instructions}>
-                      Press Cmd+R to reload,{'\n'}
-                      Cmd+D or shake for dev menu
-                    </Text>
-                  </View>
-                  <View style={styles.container}>
-                    <Text style={styles.welcome}>
-                      Welcome to React Native!
-                    </Text>
-                    <Text style={styles.instructions}>
-                      To get started, edit index.ios.js
-                    </Text>
-                    <Text style={styles.instructions}>
-                      Press Cmd+R to reload,{'\n'}
-                      Cmd+D or shake for dev menu
-                    </Text>
-                  </View>
-                  <View style={styles.container}>
-                    <Text style={styles.welcome}>
-                      Welcome to React Native!
-                    </Text>
-                    <Text style={styles.instructions}>
-                      To get started, edit index.ios.js
-                    </Text>
-                    <Text style={styles.instructions}>
-                      Press Cmd+R to reload,{'\n'}
-                      Cmd+D or shake for dev menu
-                    </Text>
-                  </View>
-                  <View style={styles.container}>
-                    <Text style={styles.welcome}>
-                      Welcome to React Native!
-                    </Text>
-                    <Text style={styles.instructions}>
-                      To get started, edit index.ios.js
-                    </Text>
-                    <Text style={styles.instructions}>
-                      Press Cmd+R to reload,{'\n'}
-                      Cmd+D or shake for dev menu
-                    </Text>
-                  </View>
-                  <View style={styles.container}>
-                    <Text style={styles.welcome}>
-                      Welcome to React Native!
-                    </Text>
-                    <Text style={styles.instructions}>
-                      To get started, edit index.ios.js
-                    </Text>
-                    <Text style={styles.instructions}>
-                      Press Cmd+R to reload,{'\n'}
-                      Cmd+D or shake for dev menu
-                    </Text>
-                  </View>
-                  <View style={styles.container}>
-                    <Text style={styles.welcome}>
-                      Welcome to React Native!
-                    </Text>
-                    <Text style={styles.instructions}>
-                      To get started, edit index.ios.js
-                    </Text>
-                    <Text style={styles.instructions}>
-                      Press Cmd+R to reload,{'\n'}
-                      Cmd+D or shake for dev menu
-                    </Text>
-                  </View>
-                  <View style={styles.container}>
-                    <Text style={styles.welcome}>
-                      Welcome to React Native!
-                    </Text>
-                    <Text style={styles.instructions}>
-                      To get started, edit index.ios.js
-                    </Text>
-                    <Text style={styles.instructions}>
-                      Press Cmd+R to reload,{'\n'}
-                      Cmd+D or shake for dev menu
-                    </Text>
-                  </View>
-            </ScrollView>*/}
       </View>
     );
   }
