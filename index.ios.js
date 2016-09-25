@@ -71,7 +71,7 @@ class ParallaxView extends Component {
    ).start();
    }
 
-   _callthis(){
+   _callthis(value){
 
 this.state.bounceValue.setValue(0.5);     // Start large
  Animated.spring(                          // Base: spring, decay, timing
@@ -112,10 +112,16 @@ this.state.bounceValue.setValue(0.5);     // Start large
    //   );
 
 const headerHeight = this.state.scrollY.interpolate({
-  inputRange: [0, 100],
-  outputRange: [0, -100],
+  inputRange: [0 , 4],
+  outputRange: [600, 200],
   extrapolate: 'clamp',
 });
+
+var color = this.state.scrollY.interpolate({
+    inputRange: [0, 50],
+    outputRange: ['rgba(255, 0, 0, 1)', 'rgba(0, 255, 0, 1)']
+});
+
 //
 const marginTop = this.state.scrollY.interpolate({
   inputRange: [0, 100],
@@ -126,27 +132,21 @@ const marginTop = this.state.scrollY.interpolate({
    //return <Parallax/>
     return (
       <View style ={{flex:1,position:'absolute',top:0,bottom:0,left:0,right:0}}>
-            <Animated.View style ={{flex:1,position:'absolute',top:0,bottom:0,left:0,right:0,backgroundColor:'lightyellow'}}>
+            {/*<Animated.View style ={{flex:1,position:'absolute',top:0,bottom:0,left:0,right:0,backgroundColor:'lightyellow'}}>
                   <TextInput  onSubmitEditing ={()=>{this._pullUp()}} style ={{flex:1,position:'absolute',top:50,bottom:50,left:20,right:20,backgroundColor:'coral',height:40}}/>
-            </Animated.View>
+            </Animated.View>*/}
+            <ScrollView style ={{flex:1,position:'absolute',top:0,bottom:0,left:0,right:0,backgroundColor:'peachpuff'}}
+            stickyHeaderIndices={[0]}
+               onScroll = {
+                  console.log("Scroll Y ", this.state.scrollY),
+                  Animated.event([{nativeEvent: {contentOffset: {y: this.state.scrollY}}}])}
+               scrollEventThrottle = {16}>
+                  <Animated.View style={{height:headerHeight,width:width,backgroundColor: color}}>
+                     <TextInput  onSubmitEditing ={()=>{this._pullUp()}} style ={{flex:1,position:'absolute',top:50,bottom:50,left:20,right:20,backgroundColor:'coral',height:40}}/>
+                  </Animated.View>
+                  {this._renderScrollViewContent()}
 
-            <Animated.View style ={{
-             flex: 1,
-             marginTop: marginTop,
-             transform: [
-                {translateY: this.state.pullUp}                  // `transform` is an ordered array  // Map `bounceValue` to `scale`
-             ]
-            }}>
-                  <ScrollView style ={{flex:1,position:'absolute',top:0,bottom:0,left:0,right:0,backgroundColor:'peachpuff'}}
-                     onScroll = {
-                        console.log("Scroll Y ", this.state.scrollY),
-                        Animated.event([{nativeEvent: {contentOffset: {y: this.state.scrollY}}}])}
-                     scrollEventThrottle = {16}>
-
-                        {this._renderScrollViewContent()}
-
-                  </ScrollView>
-            </Animated.View>
+            </ScrollView>
 
 
             {/*<ScrollView

@@ -45,6 +45,11 @@ export default class Parallax extends Component {
       extrapolate: 'clamp',
     });
 
+    var color = this.state.scrollY.interpolate({
+        inputRange: [0, 300],
+        outputRange: ['rgba(255, 0, 0, 1)', 'rgba(0, 255, 0, 1)']
+    });
+
     const imageOpacity = this.state.scrollY.interpolate({
       inputRange: [0, HEADER_SCROLL_DISTANCE/10 , HEADER_SCROLL_DISTANCE],
       outputRange: [1, 1, 0],
