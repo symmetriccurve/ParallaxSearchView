@@ -27,10 +27,10 @@ class ParallaxView extends Component {
      super(props);
 
      this.state = {
-       enter:   new Animated.Value(0.5),
-       scrollY: new Animated.Value(0),
-       bounceValue: new Animated.Value(0),
-       pullUp :new Animated.Value(500)
+       enter         :   new Animated.Value(0.5),
+       scrollY       :   new Animated.Value(0),
+       bounceValue   :   new Animated.Value(0),
+       pullUp        :   new Animated.Value(800)
      };
    }
 
@@ -61,12 +61,11 @@ class ParallaxView extends Component {
      ).start();
    }
 
-   _pullUp(){
-   this.state.pullUp.setValue(200);
+ _pullUp(){
    Animated.spring(                          // Base: spring, decay, timing
       this.state.pullUp,                 // Animate `bounceValue`
       {
-        toValue: 0.6,                         // Animate to smaller size
+        toValue: 600,                         // Animate to smaller size
         friction: 10,                          // Bouncier spring
       }
    ).start();
@@ -119,8 +118,8 @@ const headerHeight = this.state.scrollY.interpolate({
 });
 //
 const marginTop = this.state.scrollY.interpolate({
-  inputRange: [0, 200, 300],
-  outputRange: [700, 600, 100 ],
+  inputRange: [0, 100],
+  outputRange: [100, -500],
   extrapolate: 'clamp',
 });
 
@@ -133,9 +132,9 @@ const marginTop = this.state.scrollY.interpolate({
 
             <Animated.View style ={{
              flex: 1,
+             marginTop: marginTop,
              transform: [
-                {translateY: this.state.pullUp},                   // `transform` is an ordered array
-                {scale: this.state.bounceValue},  // Map `bounceValue` to `scale`
+                {translateY: this.state.pullUp}                  // `transform` is an ordered array  // Map `bounceValue` to `scale`
              ]
             }}>
                   <ScrollView style ={{flex:1,position:'absolute',top:0,bottom:0,left:0,right:0,backgroundColor:'peachpuff'}}
