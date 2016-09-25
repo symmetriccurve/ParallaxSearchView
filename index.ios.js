@@ -87,37 +87,37 @@ this.state.bounceValue.setValue(0.5);     // Start large
 
   render() {
 
-     const TM = this.state.bounceValue.interpolate({
-      inputRange: [0, 0.5],
-      outputRange: [0, 100],
-      extrapolate: 'clamp',
-     });
-
-
-     console.log("this state",this.state);
-     return(
-       <View style={{flex:1}}>
-         <TouchableHighlight onPress ={()=>{this._pullUp()}} style={{flex:1}} underlayColor= 'transparent'>
-              <Animated.Image                         // Base: Image, Text, View
-              source={{uri: 'https://facebook.github.io/react/img/logo_og.png'}}
-              style={{
-                flex: 1,
-                transform: [
-                  {translateY: this.state.pullUp},                   // `transform` is an ordered array
-                  {scale: this.state.bounceValue},  // Map `bounceValue` to `scale`
-                ]
-              }}
-            />
-         </TouchableHighlight>
-      </View>
-     );
+   //   const TM = this.state.bounceValue.interpolate({
+   //    inputRange: [0, 0.5],
+   //    outputRange: [0, 100],
+   //    extrapolate: 'clamp',
+   //   });
+     //
+     //
+   //   console.log("this state",this.state);
+   //   return(
+   //     <View style={{flex:1}}>
+   //       <TouchableHighlight onPress ={()=>{this._pullUp()}} style={{flex:1}} underlayColor= 'transparent'>
+   //            <Animated.Image                         // Base: Image, Text, View
+   //            source={{uri: 'https://facebook.github.io/react/img/logo_og.png'}}
+   //            style={{
+   //              flex: 1,
+   //              transform: [
+   //                {translateY: this.state.pullUp},                   // `transform` is an ordered array
+   //                {scale: this.state.bounceValue},  // Map `bounceValue` to `scale`
+   //              ]
+   //            }}
+   //          />
+   // //       </TouchableHighlight>
+   //    </View>
+   //   );
 
 const headerHeight = this.state.scrollY.interpolate({
   inputRange: [0, 100],
   outputRange: [0, -100],
   extrapolate: 'clamp',
 });
-
+//
 const marginTop = this.state.scrollY.interpolate({
   inputRange: [0, 200, 300],
   outputRange: [700, 600, 100 ],
@@ -128,10 +128,16 @@ const marginTop = this.state.scrollY.interpolate({
     return (
       <View style ={{flex:1,position:'absolute',top:0,bottom:0,left:0,right:0}}>
             <Animated.View style ={{flex:1,position:'absolute',top:0,bottom:0,left:0,right:0,backgroundColor:'lightyellow'}}>
-                  <TextInput  onSubmitEditing ={()=>{ this.setState({ scrollY: new Animated.Value(300)})}}style ={{flex:1,position:'absolute',top:50,bottom:50,left:20,right:20,backgroundColor:'coral',height:40}}/>
+                  <TextInput  onSubmitEditing ={()=>{this._pullUp()}} style ={{flex:1,position:'absolute',top:50,bottom:50,left:20,right:20,backgroundColor:'coral',height:40}}/>
             </Animated.View>
 
-            <Animated.View style ={{marginTop:marginTop,position:'absolute',top:0,bottom:0,left:0,right:0,backgroundColor:'lightblue'}}>
+            <Animated.View style ={{
+             flex: 1,
+             transform: [
+                {translateY: this.state.pullUp},                   // `transform` is an ordered array
+                {scale: this.state.bounceValue},  // Map `bounceValue` to `scale`
+             ]
+            }}>
                   <ScrollView style ={{flex:1,position:'absolute',top:0,bottom:0,left:0,right:0,backgroundColor:'peachpuff'}}
                      onScroll = {
                         console.log("Scroll Y ", this.state.scrollY),
